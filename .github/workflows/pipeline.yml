@@ -1,0 +1,89 @@
+name: pipeline
+
+on:
+  push:
+    branches:
+      - "*"
+    tags:
+      - "*"
+  pull_request:
+    types: [opened, reopened, synchronize]
+    
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment
+concurrency:
+  group: "pipeline"
+  cancel-in-progress: true
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Install Deps
+      run: |
+        sudo apt-get install -y libossp-uuid-dev
+        
+    - name: Setup
+      id: config
+      run: |
+    
+        # setup params
+        CPU_ARCH=$(uname -p)
+        OUTPUT_DIR="${pwd}/linux/${CPU_ARCH}"
+        
+        # create output dir
+        mkdir ${OUTPUT_DIR}
+        
+        echo  "OUTPUT_DIR=${OUTPUT_DIR}" >> "$GITHUB_OUTPUT"
+        echo  "CPU_ARCH=${CPU_ARCH}" >> "$GITHUB_OUTPUT"
+
+    - name: Configure
+      run: |
+      
+        # configure make
+        ./configure \
+          --disable-rpath \
+          --prefix="${OUTPUT_DIR}" \
+          --with-uuid="ossp"
+        
+        # configure LD
+        export LD_RUN_PATH='$ORIGIN/../lib'
+
+    - name: Make
+      run: |
+        # make the app
+        make
+        make check
+        make install-strip
+
+    - name: Archive
+      run: |
+        # remove things we dont need
+        #rm -rf "${OUTPUT_DIR}/include"
+        
+        # compile release file
+        cd "${OUTPUT_DIR}"
+        zip -r "linux-${CPU_ARCH}.zip" .
+        
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        fail_on_unmatched_files: false
+        generate_release_notes: true
+        files: |
+          linux-${{ steps.config.outputs.CPU_ARCH }}.zip
+        
