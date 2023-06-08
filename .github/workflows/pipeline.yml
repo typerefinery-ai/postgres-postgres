@@ -20,7 +20,7 @@ permissions:
 
 # Allow one concurrent deployment
 concurrency:
-  group: "pipeline"
+  group: ${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
