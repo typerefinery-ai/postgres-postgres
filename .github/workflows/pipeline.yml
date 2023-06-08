@@ -41,7 +41,7 @@ jobs:
     
         # setup params
         CPU_ARCH=$(uname -p)
-        OUTPUT_DIR="${pwd}/linux/${CPU_ARCH}"
+        OUTPUT_DIR="linux/${CPU_ARCH}"
         
         # create output dir
         mkdir ${OUTPUT_DIR}
