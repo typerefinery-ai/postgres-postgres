@@ -71,11 +71,11 @@ jobs:
     - name: Archive
       run: |
         # remove things we dont need
-        #rm -rf "${OUTPUT_DIR}/include"
+        #rm -rf "${{ steps.config.outputs.OUTPUT_DIR }}/include"
         
         # compile release file
-        cd "${OUTPUT_DIR}"
-        zip -r "linux-${CPU_ARCH}.zip" .
+        cd "${{ steps.config.outputs.OUTPUT_DIR }}"
+        zip -r "linux-${{ steps.config.outputs.CPU_ARCH }}.zip" .
         
     - name: Release
       uses: softprops/action-gh-release@v1
