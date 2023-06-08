@@ -59,7 +59,7 @@ jobs:
           --with-uuid="ossp"
         
         # configure LD
-        export LD_RUN_PATH='$ORIGIN/../lib'
+        export LD_RUN_PATH='${{ '$ORIGIN' }}/../lib'
 
     - name: Make
       run: |
