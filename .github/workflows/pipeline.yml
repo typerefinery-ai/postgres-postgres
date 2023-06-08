@@ -41,10 +41,10 @@ jobs:
     
         # setup params
         CPU_ARCH=$(uname -p)
-        OUTPUT_DIR="linux/${CPU_ARCH}"
+        OUTPUT_DIR="${GITHUB_WORKSPACE}/linux/${CPU_ARCH}"
         
         # create output dir
-        mkdir ${OUTPUT_DIR}
+        mkdir -p ${OUTPUT_DIR}
         
         echo  "OUTPUT_DIR=${OUTPUT_DIR}" >> "$GITHUB_OUTPUT"
         echo  "CPU_ARCH=${CPU_ARCH}" >> "$GITHUB_OUTPUT"
