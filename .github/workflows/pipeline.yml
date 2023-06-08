@@ -55,7 +55,7 @@ jobs:
         # configure make
         ./configure \
           --disable-rpath \
-          --prefix="${OUTPUT_DIR}" \
+          --prefix="${{ steps.config.outputs.OUTPUT_DIR }}" \
           --with-uuid="ossp"
         
         # configure LD
