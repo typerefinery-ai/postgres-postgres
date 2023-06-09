@@ -351,7 +351,7 @@ checkDataDir(void)
 	 *
 	 * XXX can we safely enable this check on Windows?
 	 */
-#if !defined(WIN32) && !defined(__CYGWIN__)
+#if (!defined(WIN32) && !defined(__CYGWIN__)) || !defined(RELAX_DATA_DIR_PERMISSIONS)
 	if (stat_buf.st_uid != geteuid())
 		ereport(FATAL,
 				(errcode(ERRCODE_OBJECT_NOT_IN_PREREQUISITE_STATE),
@@ -371,7 +371,7 @@ checkDataDir(void)
 	 * be proper support for Unix-y file permissions.  Need to think of a
 	 * reasonable check to apply on Windows.
 	 */
-#if !defined(WIN32) && !defined(__CYGWIN__)
+#if (!defined(WIN32) && !defined(__CYGWIN__)) || !defined(RELAX_DATA_DIR_PERMISSIONS)
 	if (stat_buf.st_mode & PG_MODE_MASK_GROUP)
 		ereport(FATAL,
 				(errcode(ERRCODE_OBJECT_NOT_IN_PREREQUISITE_STATE),
@@ -392,7 +392,7 @@ checkDataDir(void)
 	 * Suppress when on Windows, because there may not be proper support for
 	 * Unix-y file permissions.
 	 */
-#if !defined(WIN32) && !defined(__CYGWIN__)
+#if (!defined(WIN32) && !defined(__CYGWIN__)) || !defined(RELAX_DATA_DIR_PERMISSIONS)
 	SetDataDirectoryCreatePerm(stat_buf.st_mode);
 
 	umask(pg_mode_mask);
